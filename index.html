@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chinese New Year 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-wrapper {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 100vh;
+      width: auto;
+      object-fit: cover;
+    }
+
+    /* 覆蓋層：提示用戶點擊開聲 */
+    .unmute-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 10;
+      text-align: center;
+    }
+
+    .unmute-overlay span {
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    /* 自訂控制器 */
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 20;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+    }
+
+    .controls button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .controls input[type="range"] {
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div class="video-wrapper">
+    <video
+      id="bgVideo"
+      src="Chinese New Year 2026 (Dual Sub).mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+    ></video>
+  </div>
+
+  <!-- 點一下開聲的覆蓋層 -->
+  <div class="unmute-overlay" id="unmuteOverlay">
+    <span>Tap to unmute</span>
+  </div>
+
+  <!-- 控制器 -->
+  <div class="controls">
+    <button id="playPause">Pause</button>
+    <input type="range" id="progress" value="0" min="0" max="100">
+  </div>
+
+  <script>
+    const video = document.getElementById('bgVideo');
+    const overlay = document.getElementById('unmuteOverlay');
+    const playPauseBtn = document.getElementById('playPause');
+    const progressBar = document.getElementById('progress');
+
+    // 點擊覆蓋層：開聲
+    overlay.addEventListener('click', async () => {
+      try {
+        video.muted = false;
+        await video.play();
+      } catch (e) {
+        console.log(e);
+      }
+      overlay.style.display = 'none';
+    });
+
+    // 播放/暫停按鈕
+    playPauseBtn.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        playPauseBtn.textContent = 'Pause';
+      } else {
+        video.pause();
+        playPauseBtn.textContent = 'Play';
+      }
+    });
+
+    // 更新進度條
+    video.addEventListener('timeupdate', () => {
+      const percent = (video.currentTime / video.duration) * 100;
+      progressBar.value = percent;
+    });
+
+    // 拖曳進度條控制影片
+    progressBar.addEventListener('input', () => {
+      const time = (progressBar.value / 100) * video.duration;
+      video.currentTime = time;
+    });
+  </script>
+</body>
+</html>
